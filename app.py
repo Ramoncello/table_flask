@@ -29,8 +29,8 @@ def index():
                     max_int = int(borne_max)
 
             if not message:
-                if not (0 <= n_int <= 20):
-                    message = "Erreur : le nombre doit être entre 0 et 20."
+                if not (0 <= n_int <= 1 000 000):
+                    message = "Erreur : le nombre doit être entre 0 et 1 000 000."
                 elif operation in ("multiplication", "puissance") and not (1 <= max_int <= 20):
                     message = "Erreur : la borne max doit être entre 1 et 20."
                 else:
