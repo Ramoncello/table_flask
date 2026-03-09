@@ -35,51 +35,59 @@
             🧮 Tables de multiplication
           </h1>
 
-          <form method="post" id="operation-form">
-            <div class="mb-3">
-              <label for="operation" class="form-label fw-bold">Opération</label>
-              <select class="form-select form-select-lg" id="operation" name="operation">
-                <option value="multiplication" {% if operation == "multiplication" %}selected{% endif %}>
-                  Multiplication
-                </option>
-                <option value="puissance" {% if operation == "puissance" %}selected{% endif %}>
-                  Exposant (puissance)
-                </option>
-                <option value="factorielle" {% if operation == "factorielle" %}selected{% endif %}>
-                  Factorielle
-                </option>
-              </select>
-            </div>
+<form method="post" id="operation-form">
+  <div class="mb-3">
+    <label for="operation" class="form-label fw-bold">Opération</label>
+    <select class="form-select form-select-lg" id="operation" name="operation">
+      <option value="multiplication" {% if operation == "multiplication" %}selected{% endif %}>
+        Multiplication
+      </option>
+      <option value="puissance" {% if operation == "puissance" %}selected{% endif %}>
+        Exposant (puissance)
+      </option>
+      <option value="factorielle" {% if operation == "factorielle" %}selected{% endif %}>
+        Factorielle
+      </option>
+    </select>
+  </div>
 
-            <div class="mb-3" id="bloc-nombre">
-              <label for="n" class="form-label fw-bold">
-                Nombre (entier positif)
-              </label>
-              <input type="text" class="form-control form-control-lg"
-                     id="n" name="n" value="{{ n }}"
-                     placeholder="Ex : 4">
-              <small class="text-muted">
-                Choisir un entier de 0 à 20 (pour factorielle, 0 à 12 conseillé).
-              </small>
-            </div>
+  <div class="mb-3" id="bloc-nombre">
+    <label for="n" class="form-label fw-bold">
+      Nombre (entier positif)
+    </label>
+    <input type="text" class="form-control form-control-lg"
+           id="n" name="n" value="{{ n }}"
+           placeholder="Ex : 4">
+    <small class="text-muted">
+      Choisir un entier de 0 à 20 (pour factorielle, 0 à 12 conseillé).
+    </small>
+  </div>
 
-            <div class="mb-3" id="bloc-borne-max">
-              <label for="borne_max" class="form-label fw-bold">Borne max</label>
-              <input type="text" class="form-control form-control-lg"
-                     id="borne_max" name="borne_max" value="{{ borne_max }}"
-                     placeholder="Ex : 10">
-              <small class="text-muted">
-                Multiplication et puissance : borne max entre 1 et 20.
-              </small>
-            </div>
+  <div class="mb-3" id="bloc-borne-max">
+    <label for="borne_max" class="form-label fw-bold">Borne max</label>
+    <input type="text" class="form-control form-control-lg"
+           id="borne_max" name="borne_max" value="{{ borne_max }}"
+           placeholder="Ex : 10">
+    <small class="text-muted">
+      Multiplication et puissance : borne max entre 1 et 20.
+    </small>
+  </div>
 
-            <div class="d-grid" id="bloc-bouton">
-              <button type="submit" class="btn btn-lg text-white"
-                      style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                Calculer
-              </button>
-            </div>
-          </form>
+  <div class="d-grid" id="bloc-bouton">
+    <button type="submit" class="btn btn-lg text-white"
+            style="background: linear-gradient(135deg, #667eea, #764ba2);">
+      Calculer
+    </button>
+  </div>
+
+  {% if deja_calcule %}
+    <div class="d-grid mt-3">
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+        Nouveau calcul
+      </a>
+    </div>
+  {% endif %}
+</form>
 
           {% if message %}
             <div class="alert alert-danger mt-3 text-center" role="alert">
@@ -105,45 +113,29 @@
   </div>
 
   <script>
-    function mettreAJourAffichage() {
-      const selectOp = document.getElementById("operation");
-      const blocNombre = document.getElementById("bloc-nombre");
-      const blocBorneMax = document.getElementById("bloc-borne-max");
-      const blocBouton = document.getElementById("bloc-bouton");
+  function mettreAJourAffichage() {
+    const op = document.getElementById("operation").value;
+    const blocBorneMax = document.getElementById("bloc-borne-max");
 
-      const op = selectOp.value;
-
-      // On montre toujours le bloc nombre et le bouton
-      blocNombre.style.display = "block";
-      blocBouton.style.display = "block";
-
-      // Borne max seulement pour multiplication et puissance
-      if (op === "multiplication" || op === "puissance") {
-        blocBorneMax.style.display = "block";
-      } else {
-        blocBorneMax.style.display = "none";
-      }
-    }
-
-    function initialiserAffichage() {
-      const blocNombre = document.getElementById("bloc-nombre");
-      const blocBorneMax = document.getElementById("bloc-borne-max");
-      const blocBouton = document.getElementById("bloc-bouton");
-
-      // Au tout premier chargement, on ne montre que la sélection d'opération
-      blocNombre.style.display = "none";
+    if (op === "multiplication" || op === "puissance") {
+      blocBorneMax.style.display = "block";
+    } else {
       blocBorneMax.style.display = "none";
-      blocBouton.style.display = "none";
-
-      const selectOp = document.getElementById("operation");
-      selectOp.addEventListener("change", function () {
-        // Dès qu'on choisit une opération, on affiche les champs appropriés
-        mettreAJourAffichage();
-      });
     }
+  }
 
-    document.addEventListener("DOMContentLoaded", initialiserAffichage);
-  </script>
+  function initialiserAffichage() {
+    const selectOp = document.getElementById("operation");
+    // On montre toujours le bloc nombre et le bouton
+    document.getElementById("bloc-nombre").style.display = "block";
+    document.getElementById("bloc-bouton").style.display = "block";
+
+    mettreAJourAffichage();
+    selectOp.addEventListener("change", mettreAJourAffichage);
+  }
+
+  document.addEventListener("DOMContentLoaded", initialiserAffichage);
+</script>
 
 </body>
 </html>
